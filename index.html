@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ApoloIA - Asistente Espacial Virtual 🌌</title>
+    <style>
+        /* CSS: Estilos visuales con fondo espacial y animaciones avanzadas */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.8)), 
+                        url('https://unsplash.com');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: #f3f4f6;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            background-color: rgba(17, 24, 39, 0.85); 
+            backdrop-filter: blur(10px); 
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.7);
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+            border: 1px solid rgba(59, 130, 246, 0.3); 
+            position: relative;
+        }
+        h1 {
+            color: #60a5fa;
+            margin-bottom: 5px;
+            text-shadow: 0 0 10px rgba(96, 165, 250, 0.5);
+            font-size: 32px;
+            letter-spacing: 1px;
+        }
+        p {
+            color: #d1d5db;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+        input {
+            width: 100%;
+            padding: 14px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            border: 1px solid #4b5563;
+            background-color: rgba(31, 41, 55, 0.9);
+            color: white;
+            font-size: 16px;
+            box-sizing: border-box;
+            outline: none;
+        }
+        input:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 8px rgba(59, 130, 246, 0.5);
+        }
+        .botones-grupo {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        button {
+            color: white;
+            border: none;
+            padding: 14px 24px;
+            font-size: 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        #botonConsultar {
+            background-color: #2563eb;
+            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4);
+            flex: 2;
+        }
+        #botonConsultar:hover {
+            background-color: #1d4ed8;
+            transform: translateY(-1px);
+        }
+        #botonBorrar {
+            background-color: #dc2626;
+            box-shadow: 0 4px 14px rgba(220, 38, 38, 0.4);
+            flex: 1;
+        }
+        #botonBorrar:hover {
+            background-color: #b91c1c;
+            transform: translateY(-1px);
+        }
+        /* Contenedor del Historial del Chat */
+        .historial-chat {
+            max-height: 250px;
+            overflow-y: auto;
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 8px;
+            background-color: rgba(15, 23, 42, 0.6);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            text-align: left;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .mensaje {
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-size: 14.5px;
+            line-height: 1.5;
+            max-width: 85%;
+            animation: entradaMsg 0.3s ease-out;
+        }
+        .mensaje-usuario {
+            background-color: #1e3a8a;
+            color: #eff6ff;
+            align-self: flex-end;
+            border-bottom-right-radius: 2px;
+        }
+        .mensaje-apolo {
+            background-color: #1e293b;
+            color: #f1f5f9;
+            align-self: flex-start;
+            border-bottom-left-radius: 2px;
+            border-left: 3px solid #3b82f6;
+        }
+        .resultado-layout {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 8px;
+            background-color: rgba(31, 41, 55, 0.9);
+            border-left: 5px solid #10b981;
+            text-align: left;
+            display: none; 
+            align-items: center;
+            gap: 20px;
+        }
+        .animacion-parpadeo {
+            animation: parpadeoGlow 1.5s ease-in-out;
+        }
+        .texto-respuesta {
+            flex: 1;
+            line-height: 1.6;
+            font-size: 15px;
+            white-space: pre-wrap;
+        }
+        .imagen-armstrong {
+            width: 90px;
+            height: 120px;
+            border-radius: 6px;
+            object-fit: cover;
+            border: 2px solid #60a5fa;
+            display: none; 
+            opacity: 0;
+            transition: opacity 1.5s ease-in-out;
+        }
+        .imagen-visible {
+            opacity: 1;
+        }
+        .contenedor-robot {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            z-index: 1000;
+        }
+        .burbuja-chat {
+            background-color: #1e293b;
+            color: #e2e8f0;
+            padding: 12px 16px;
+            border-radius: 12px;
+            border: 1px solid #3b82f6;
+            font-size: 13px;
+            max-width: 220px;
+            margin-bottom: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+            position: relative;
+        }
+        .burbuja-chat::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            right: 25px;
+            border-width: 8px 8px 0;
+            border-style: solid;
+            border-color: #1e293b transparent;
+        }
+        .icono-robot {
+            font-size: 45px;
+            background: rgba(30, 41, 59, 0.8);
+            padding: 5px;
+            border-radius: 50%;
+            border: 2px solid #3b82f6;
+            box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+            animation: flotar 3s ease-in-out infinite;
+        }
+        @keyframes parpadeoGlow {
+            0% { box-shadow: 0 0 5px rgba(59, 130, 246, 0.2); border-color: rgba(59, 130, 246, 0.3); }
+            25% { box-shadow: 0 0 20px rgba(16, 185, 129, 0.8); border-color: rgba(16, 185, 129, 1); }
+            50% { box-shadow: 0 0 5px rgba(59, 130, 246, 0.2); border-color: rgba(59, 130, 246, 0.3); }
+            75% { box-shadow: 0 0 15px rgba(16, 185, 129, 0.6); border-color: rgba(52, 211, 153, 0.8); }
+            100% { box-shadow: 0 0 5px rgba(59, 130, 246, 0.2); border-color: rgba(59, 130, 246, 0.3); }
+        }
+        @keyframes flotar {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+            100% { transform: translateY(0px); }
+        }
+        @keyframes entradaMsg {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body onload="cargarHistorialAnterior()">
+
+    <div class="container">
+        <h1>🚀 ApoloIA</h1>
+        <p>Tu guía espacial con memoria. Pregúntame sobre Armstrong, la Luna, la Tierra o mitos del universo.</p>
+        
+        <!-- Historial dinámico donde se acumulan los mensajes anteriores guardados -->
+        <div id="historialChat" class="historial-chat">
+            <div class="mensaje mensaje-apolo">🤖 ¡Hola de nuevo! Soy ApoloIA. Recuerdo nuestras conversaciones anteriores gracias a las Cookies locales. ¡Hazme una pregunta! 🌌</div>
+        </div>
+
+        <input type="text" id="preguntaUsuario" placeholder="Ej. ¿Quién es Armstrong? o ¿La luna tiene luz propia?" onkeypress="evaluarEnter(event)">
+        
+        <div class="botones-grupo">
+            <button id="botonConsultar" onclick="procesarPregunta()">Consultar a ApoloIA 🛰️</button>
+            <button id="botonBorrar" onclick="limpiarMemoria()">Borrar Memoria 🧹</button>
+        </div>
+        
+        <!-- Alerta de Respuesta en Vivo -->
+        <div id="contenedorResultado" class="resultado-layout">
+            <div id="cajaTexto" class="texto-respuesta"></div>
+            <img id="fotoArmstrong" class="imagen-armstrong" src="" alt="Neil Armstrong">
+        </div>
+    </div>
+
+    <div class="contenedor-robot">
+        <div id="burbujaRobot" class="burbuja-chat">¡Sigo recordando todo lo que conversamos! 🧠</div>
+        <div class="icono-robot">🤖</div>
+    </div>
+
+    <script>
+        let intervaloEscritura;
+
+        // Función para guardar las conversaciones usando localStorage (Cookies/Almacenamiento Local del navegador)
+        function guardarEnMemoria(remitente, texto) {
+            let historial = JSON.parse(localStorage.getItem("historial_apoloia")) || [];
+            historial.push({ remitente: remitente, texto: texto });
+            localStorage.setItem("historial_apoloia", JSON.stringify(historial));
+        }
+
+        // Función que se ejecuta automáticamente al entrar a la página para recuperar el chat anterior
+        function cargarHistorialAnterior() {
+            let historial = JSON.parse(localStorage.getItem("historial_apoloia")) || [];
+            let contenedorHtml = document.getElementById("historialChat");
+            
+            if(historial.length > 0) {
+                document.getElementById("burbujaRobot").innerHTML = "¡Vaya! He recuperado nuestra última conversación de mi memoria. 🚀";
+            }
+
+            historial.forEach(msg => {
+                let div = document.createElement("div");
+                div.className = msg.remitente === "usuario" ? "mensaje mensaje-usuario" : "mensaje mensaje-apolo";
+                div.innerHTML = msg.texto;
+
+
+ 
